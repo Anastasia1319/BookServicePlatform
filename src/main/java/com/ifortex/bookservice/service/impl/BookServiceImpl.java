@@ -4,17 +4,18 @@ import com.ifortex.bookservice.data.BookRepository;
 import com.ifortex.bookservice.dto.SearchCriteria;
 import com.ifortex.bookservice.model.Book;
 import com.ifortex.bookservice.service.BookService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 @Service
 @Primary
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
     @Override
@@ -22,9 +23,12 @@ public class BookServiceImpl implements BookService {
         List<Object[]> rawData = bookRepository.countBooksByGenre();
 
         return rawData.stream()
+                .sorted((entry1, entry2) -> Long.compare(((Number) entry2[1]).longValue(), ((Number) entry1[1]).longValue()))
                 .collect(Collectors.toMap(
                         row -> (String) row[0],
-                        row -> ((Number) row[1]).longValue()
+                        row -> ((Number) row[1]).longValue(),
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
                 ));
     }
 

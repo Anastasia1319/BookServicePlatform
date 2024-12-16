@@ -13,11 +13,13 @@ import java.util.List;
 public class BookRepositoryImpl implements BookRepository {
     @PersistenceContext
     private final EntityManager entityManager;
-    private static final String COUNT_BY_GENRE = "SELECT genre, COUNT(*) AS book_count FROM books, " +
-            "UNNEST(genres) AS genre GROUP BY genre ORDER BY book_count DESC";
+    private static final String COUNT_BY_GENRE = "SELECT genre, COUNT(*) AS book_count " +
+            "FROM (SELECT UNNEST(genre) AS genre " +
+            "FROM books) AS unnest_genres GROUP BY genre " +
+            "ORDER BY book_count";
 
     @Override
     public List<Object[]> countBooksByGenre() {
-        return entityManager.createQuery(COUNT_BY_GENRE, Object[].class).getResultList();
+        return  entityManager.createNativeQuery(COUNT_BY_GENRE, Object[].class).getResultList();
     }
 }
