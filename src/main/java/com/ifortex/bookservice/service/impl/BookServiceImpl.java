@@ -34,6 +34,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllByCriteria(SearchCriteria searchCriteria) {
-        return null;
+        return bookRepository.getBooksByCriteria(searchCriteria);
     }
 }
