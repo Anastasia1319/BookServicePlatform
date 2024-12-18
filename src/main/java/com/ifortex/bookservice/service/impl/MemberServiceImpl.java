@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,6 +25,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<Member> findMembers() {
-        return null;
+        LocalDateTime startDate = LocalDateTime.of(2023, 1, 1, 0, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 12, 31, 23, 59, 59, 999999);
+        return memberRepository.findMembersNotReadBooks(startDate, endDate);
     }
 }
