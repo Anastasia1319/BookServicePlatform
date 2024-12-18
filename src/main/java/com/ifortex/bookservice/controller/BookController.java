@@ -5,14 +5,13 @@ import com.ifortex.bookservice.model.Book;
 import com.ifortex.bookservice.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController("api/v1/books")
+@RestController
+@RequestMapping("api/v1/books")
 @AllArgsConstructor
 public class BookController {
 
@@ -24,7 +23,19 @@ public class BookController {
   }
 
   @GetMapping("search")
-  public List<Book> findBooks(@RequestBody @Nullable SearchCriteria searchCriteria) {
+  public List<Book> findBooks(@RequestParam(required = false) String title,
+                              @RequestParam(required = false) String author,
+                              @RequestParam(required = false) String genre,
+                              @RequestParam(required = false) String description,
+                              @RequestParam(required = false) Integer year) {
+    SearchCriteria searchCriteria = SearchCriteria.builder()
+            .title(title)
+            .author(author)
+            .genre(genre)
+            .description(description)
+            .year(year)
+            .build();
+
     return bookService.getAllByCriteria(searchCriteria);
   }
 }
